@@ -1,55 +1,14 @@
 ﻿@page "/addnew"
 @inject DeviceService DeviceService
 @inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
-@using System.Text.RegularExpressions
 
-<div class="device">
-    <div class="name">
-        <span class="caption">デバイス名</span>
-        <span class="input-field">
-            <input type="text" name="name" bind="@NewDevice.Name" />
-        </span>
-    </div>
-    <div class="mac-address">
-        <span class="caption">MACアドレス</span>
-        <span class="input-field">
-            <input type="text" name="name" bind="@NewDevice.MACAddress" />
-        </span>
-    </div>
-    <div class="error-message">@ErrorMessage</div>
-    <div class="actions">
-        <a class="button" onclick="@OnOK">OK</a>
-        <a class="button" href="/">キャンセル</a>
-    </div>
-</div>
+<DeviceForm Item=@(new Device()) OnClickOK="@OnClickOK"></DeviceForm>
 
 @functions {
-    Device NewDevice = new Device();
-    string ErrorMessage = "";
-
-    async Task OnOK()
+    async Task OnClickOK(Device newDevice)
     {
-        // 入力チェック
-        if (string.IsNullOrWhiteSpace(NewDevice.Name))
-        {
-            ErrorMessage = "デバイス名を入力してください。";
-        }
-        else if (string.IsNullOrWhiteSpace(NewDevice.MACAddress))
-        {
-            ErrorMessage = "MACアドレスを入力してください。";
-        }
-        else if (!Regex.IsMatch(NewDevice.MACAddress, @"^[\da-f]{2}((:|-)[\daf]{2}){5}$", RegexOptions.IgnoreCase))
-        {
-            ErrorMessage = "MACアドレスの書式が正しくありません。";
-        }
-        else ErrorMessage = "";
-        if (ErrorMessage != "") return;
-
-        // MACアドレスの正規化
-        NewDevice.MACAddress = NewDevice.MACAddress.Replace("-", ":").ToUpper();
-
         // デバイス情報登録
-        await DeviceService.AddDeviceAsync(NewDevice);
+        await DeviceService.AddDeviceAsync(newDevice);
         UriHelper.NavigateTo("/");
     }
 }
