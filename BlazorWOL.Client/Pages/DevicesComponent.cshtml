@@ -1,0 +1,24 @@
+﻿@inject DeviceService DeviceService
+
+@foreach (var device in Devices)
+{
+    <div class="device">
+        <div class="name">
+            <span class="caption">デバイス名</span>
+            <span class="value">@device.Name</span>
+        </div>
+        <div class="mac-address">
+            <span class="caption">MACアドレス</span>
+            <span class="value">@device.MACAddress</span>
+        </div>
+    </div>
+}
+
+@functions {
+    IEnumerable<Device> Devices;
+
+    protected override async Task OnInitAsync()
+    {
+        Devices = await DeviceService.GetServicesAsync();
+    }
+}
