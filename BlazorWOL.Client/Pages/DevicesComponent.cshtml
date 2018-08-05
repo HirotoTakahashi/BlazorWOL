@@ -13,6 +13,23 @@
         </div>
     </div>
 }
+    <div class="device">
+        <div class="name">
+            <span class="caption">デバイス名</span>
+            <span class="input-field">
+                <input type="text" name="name" bind="@NewDevice.Name" />
+            </span>
+        </div>
+        <div class="mac-address">
+            <span class="caption">MACアドレス</span>
+            <span class="input-field">
+                <input type="text" name="name" bind="@NewDevice.MACAddress" />
+            </span>
+        </div>
+        <div class="actions">
+            <a class="button" onclick="@OnOK">OK</a>
+        </div>
+    </div>
 
 @functions {
     IEnumerable<Device> Devices;
@@ -20,5 +37,13 @@
     protected override async Task OnInitAsync()
     {
         Devices = await DeviceService.GetServicesAsync();
+    }
+
+    Device NewDevice = new Device();
+
+    async Task OnOK()
+    {
+        await DeviceService.AddDeviceAsync(NewDevice);
+        NewDevice = new Device();
     }
 }
